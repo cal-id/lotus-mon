@@ -1,0 +1,67 @@
+{% extends "monitor/base.html" %}
+{% debug %}
+{% block baseContent %}
+    {% if crash and ganglias %}
+        <div class="page-header">
+            <center>
+                <h1>{{ crash.host }} <small>{{ crash.date }}</small></h1>
+            </center>
+        </div>
+        <ul class="nav nav-tabs nav-justified" id="tabSwitcher">
+          <li class="active"><a data-toggle="tab" href="#lsf">LSF Info</a></li>
+          <li><a data-toggle="tab" href="#ganglia">Ganglia</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="lsf" class="tab-pane active">
+                {% if noLsfData %}
+                    <center>
+                        No LSF data for this crash (probably nothing running).
+                    </center>
+                {% else %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-condensed">
+                                    <thead>
+                                        {% for lsfHead in lsfHeaders %}
+                                            <th> {{lsfHead}} </th>
+                                        {% endfor %}
+                                    </thead>
+                                    <tbody>
+                                        {% for lsfRow in lsfRows %}
+                                            <tr>
+                                                {% for lsfCol in lsfRow %}
+                                                    <td style="white-space: nowrap;">
+                                                        {{ lsfCol}}
+                                                    </td>
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <center>
+                        <a href="{{ crash.lsfData.url }}"> LSF as csv</a>
+                    </center>
+                {% endif %}
+            </div>
+            <div id="ganglia" class="tab-pane">
+                <div class="row">
+                    {% for ganglia in ganglias %}
+                            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                                <img class="graph" style="width:100%" src="{{ ganglia.image.url }}"></img>
+                            </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>This crash isn't avaliable / doesn't exist!</p>
+    {% endif %}
+{% endblock %}
+
+{% block baseInfo %}
+    {{ crash.host }}
+{% endblock %}

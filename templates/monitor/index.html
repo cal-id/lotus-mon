@@ -1,0 +1,82 @@
+{% extends "monitor/base.html" %}
+{% block baseContent %}
+    <div class="row">
+        <div class="col-md-12 center-block text-center">
+            Register Crash <input type="text" id="hostNameIN"></input>
+            <a id="linkToHostOUT"></a>
+            <script>
+                hostNameIN.addEventListener("input", function(e){
+                    host = e.target.value;
+                    linkToHostOUT.innerText = "Register Crash On: host"+ host +".jc.rl.ac.uk";
+                    linkToHostOUT.href = "/register-crash/host"+host+".jc.rl.ac.uk";
+                })
+            </script>
+        </div>
+    </div>
+    <center>
+        <h3>
+            Crashes <span class="badge">{{crashesByDate|length}}</span>
+        </h3>
+    </center>
+    <div class="row">
+        <div class="col-sm-4">
+            <h4>By Date</h4>
+            <div class="list-group">
+            {% for crash in crashesByDate %}
+                <a href="{% url 'monitor:savedCrash' crash.id %}" class="list-group-item"> {{ crash.date }} - {{ crash.host }}</a></li>
+            {% empty %}
+            No crashes saved.
+            {% endfor %}
+            </div>
+        </div>
+        {% for listTitle, listData, colSize in listByThis %}
+        <div class="col-sm-{{colSize}}">
+            <h4>By {{ listTitle }} <span class="badge">{{ listData|length}}</span></h4>
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            {% for crashesForThis, name, thisInfo in listData %}
+                {% with stringcount=forloop.counter|stringformat:"s" %}
+                {% with headingID="heading"|add:listTitle|add:stringcount collapseID="collapse"|add:listTitle|add:stringcount %}
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id='{{ headingID }}'>
+                        <h4 class="panel-title">
+                            <a {% if forloop.counter0 != 0 %}class="collapsed"{% endif %} role="button" data-toggle="collapse" data-parent="#accordion" href="#{{ collapseID }}" aria-expanded="true" aria-controls="{{ collapseID }}">
+                                {{ name}}
+                            </a>
+                            <span class="badge" style="float:right;">{{crashesForThis|length}}</span>
+                        </h4>
+                    </div>
+                    <div id="{{ collapseID }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{ headingID }}">
+                        <div class="panel-body">
+                            <div class="list-group">
+                        {% if thisInfo %}
+                            <div class="list-group-item">
+                                <pre>{{thisInfo}}</pre>
+                            </div>
+                        {% endif %}
+                        {% for crash in crashesForThis %}
+                                <a href="{% url 'monitor:savedCrash' crash.id %}" class="list-group-item">
+                                    {% if listTitle != "Hostname" %}
+                                        {{ crash.host.address }} @
+                                    {% endif %}
+                                    {{ crash.date }}
+                                </a></li>
+                        {% empty %}
+                        no crashes saved
+                        {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+                {% endwith %}
+            {% empty %}
+            No crashes saved.
+            {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+
+
+{% endblock %}

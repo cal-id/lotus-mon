@@ -1,0 +1,11 @@
+{% extends "monitor/base.html" %}
+{% block baseContent %}
+    <div>
+        {% if worked %}
+            Crash Registered at {{ host }}
+        {% else %}
+            Crash Register Failed for {{ host }}!
+            {{ info }}
+        {% endif %}
+    </div>
+{% endblock %}

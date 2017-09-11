@@ -1,0 +1,5 @@
+body {
+    margin: 0px;  /* to remove borders */
+    overflow-x: hidden;  /* to stop the x scrollbar */
+    overflow-y: scroll;  /* so that the scrollbar doesn't suddenly appear */
+}

@@ -1,0 +1,58 @@
+{% load static %}
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{% static "monitor/css/bootstrap.min.css" %}">
+        <link rel="stylesheet" type="text/css" href="{% static "monitor/css/base.css" %}">
+    </head>
+    <body>
+
+
+        <nav class="navbar navbar-default">
+          <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="/">Lotus Mon</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav">
+                <li class="dropdown {% if not latestCrashes %}disabled{% endif %}">
+                  <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Latest Crashes <span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        {% for host, date, id in latestCrashes %}
+                            <li><a class="dropdown-item" href="{% url 'monitor:savedCrash' id %}">{{ host }} @ {{ date }}</a></li>
+                        {% empty %}
+                            No crashes are available.
+                        {% endfor %}
+                  </ul>
+                </li>
+                <li>
+                  <a href="/admin">Admin Panel</a>
+                </li>
+              </ul>
+              <span class="navbar-text navbar-right">
+                {% block baseInfo %}
+                {% endblock %}
+              </span>
+            </div><!-- /.navbar-collapse -->
+          </div><!-- /.container-fluid -->
+        </nav>
+
+        <div>
+            {% block baseContent %}
+            {% endblock %}
+        </div>
+    </body>
+    <script src="{% static "monitor/js/jquery-3.1.1.min.js" %}"></script>
+    <script src="{% static "monitor/js/tether.min.js" %}"></script>
+    <script src="{% static "monitor/js/bootstrap.min.js" %}"></script>
+</html>
